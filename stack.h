@@ -45,10 +45,12 @@
 #define StackPush(stack, element) \
     Stack_tPush(stack, element)
 
-typedef uint64_t stackElement;
+#define StackPop(stack) Stack_tPop(stack)
+
+typedef int64_t stackElement;
 typedef uint64_t trigger;
 typedef uint64_t hash;
-typedef uint64_t stackInfo;
+typedef int64_t stackInfo;
 typedef int errno;
 
 typedef struct {
@@ -123,7 +125,7 @@ void Stack_tDump(Stack_t* stack, int code);
 
 void Stack_tPush(Stack_t* stack, stackElement value);
 
-uint64_t Stack_tPop(Stack_t* stack);
+stackElement Stack_tPop(Stack_t* stack);
 
 void DeleteStack(Stack_t* stack, location LC);
 

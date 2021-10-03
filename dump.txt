@@ -15,3 +15,182 @@ Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697
  
  
  
+DUMP from Oct  3 2021, 21:35:58 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (133) in stack called myStack. Info below: 
+Error reason: [!] Data is NULL [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 21:35:58
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPush
+Line: 133
+Left Stack trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+
+ 
+ 
+ 
+ 
+ 
+DUMP from Oct  3 2021, 22:00:35 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (195) in stack called myStack. Info below: 
+Error reason: [!] Stack overflow [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 22:00:35
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPop
+Line: 195
+Left Stack trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+Left Data trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? NO. Valid trigger: 3735943697 
+Stack hash: 0. Valid ? NO. Valid hash: 9744367277466107048
+Stack hash: 15945758769542287833. Valid ? NO. Valid hash: 9472070708006856020
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc8cfc4a90. Index: 0
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc8cfc4a90. Index: 1
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc8cfc4a90. Index: 2
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc8cfc4a90. Index: 3
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc8cfc4a90. Index: 4
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc8cfc4a90. Index: 5
+
+ 
+ 
+ 
+ 
+ 
+DUMP from Oct  3 2021, 22:04:12 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (195) in stack called myStack. Info below: 
+Error reason: [!] Stack overflow [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 22:04:12
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPop
+Line: 195
+Left Stack trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+Left Data trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? NO. Valid trigger: 3735943697 
+Stack hash: 0. Valid ? NO. Valid hash: 5127280868763956243
+Stack hash: 9205959387704000376. Valid ? NO. Valid hash: 9472070708006856020
+Value: 3735936685. Valid ? POISON. Address: 0x7ffeb37f51a0. Index: 0
+Value: 3735936685. Valid ? POISON. Address: 0x7ffeb37f51a0. Index: 1
+Value: 3735936685. Valid ? POISON. Address: 0x7ffeb37f51a0. Index: 2
+Value: 3735936685. Valid ? POISON. Address: 0x7ffeb37f51a0. Index: 3
+Value: 3735936685. Valid ? POISON. Address: 0x7ffeb37f51a0. Index: 4
+Value: 3735936685. Valid ? POISON. Address: 0x7ffeb37f51a0. Index: 5
+
+ 
+ 
+ 
+ 
+ 
+DUMP from Oct  3 2021, 22:07:31 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (195) in stack called myStack. Info below: 
+Error reason: [!] Stack underflow [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 22:07:31
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPop
+Line: 195
+Left Stack trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+Left Data trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? NO. Valid trigger: 3735943697 
+Stack hash: 0. Valid ? NO. Valid hash: 17774500880163654750
+Stack hash: 9590558925116944399. Valid ? NO. Valid hash: 9472070708006856020
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd842ddbb0. Index: 0
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd842ddbb0. Index: 1
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd842ddbb0. Index: 2
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd842ddbb0. Index: 3
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd842ddbb0. Index: 4
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd842ddbb0. Index: 5
+
+ 
+ 
+ 
+ 
+ 
+DUMP from Oct  3 2021, 22:09:05 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (195) in stack called myStack. Info below: 
+Error reason: [!] Stack underflow [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 22:09:05
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPop
+Line: 195
+Left Stack trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+Left Data trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? NO. Valid trigger: 3735943697 
+Stack hash: 0. Valid ? NO. Valid hash: 771038098845263305
+Stack hash: 5641559701315639498. Valid ? NO. Valid hash: 9472070708006856020
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe01ca8aa0. Index: 0
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe01ca8aa0. Index: 1
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe01ca8aa0. Index: 2
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe01ca8aa0. Index: 3
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe01ca8aa0. Index: 4
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe01ca8aa0. Index: 5
+
+ 
+ 
+ 
+ 
+ 
+DUMP from Oct  3 2021, 22:09:05 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (195) in stack called myStack. Info below: 
+Error reason: [!] Stack underflow [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 22:09:05
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPop
+Line: 195
+Left Stack trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+Left Data trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? NO. Valid trigger: 3735943697 
+Stack hash: 0. Valid ? NO. Valid hash: 13230664061905064947
+Stack hash: 2129573656598945620. Valid ? NO. Valid hash: 9472070708006856020
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd8c3b0470. Index: 0
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd8c3b0470. Index: 1
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd8c3b0470. Index: 2
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd8c3b0470. Index: 3
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd8c3b0470. Index: 4
+Value: 3735936685. Valid ? POISON. Address: 0x7ffd8c3b0470. Index: 5
+
+ 
+ 
+ 
+ 
+ 
+DUMP from Oct  3 2021, 22:11:15 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (195) in stack called myStack. Info below: 
+Error reason: [!] Stack underflow [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 22:11:15
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPop
+Line: 195
+Left Stack trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+Left Data trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? NO. Valid trigger: 3735943697 
+Stack hash: 0. Valid ? NO. Valid hash: 17538177475978963657
+Stack hash: 2733625546986418542. Valid ? NO. Valid hash: 9472070708006856020
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc7eeedcb0. Index: 0
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc7eeedcb0. Index: 1
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc7eeedcb0. Index: 2
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc7eeedcb0. Index: 3
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc7eeedcb0. Index: 4
+Value: 3735936685. Valid ? POISON. Address: 0x7ffc7eeedcb0. Index: 5
+
+ 
+ 
+ 
+ 
+ 

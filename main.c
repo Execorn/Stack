@@ -1,14 +1,15 @@
-#include <math.h>
 #include "stack.h"
 
 
 int main() {
     StackConstructor(myStack);
-    StackPush(&myStack, 10);StackPush(&myStack, 10001);
-    stackElement a = Stack_tPop(&myStack);
+    StackPush(&myStack, 10);
+    StackPush(&myStack, 10001);
+    stackElement a = StackPop(&myStack);
     printf("%lu \n", a);
+    printf("%lu \n", StackPop(&myStack));
+    printf("%lu \n", StackPop(&myStack)); //here is an error
     StackDestructor(&myStack);
-    StackPush(&myStack, 100);
 }
 
 hash Power(int64_t base, uint64_t power) {
@@ -130,7 +131,7 @@ void Stack_tDump(Stack_t* stack, int code) {
     fclose(dump_output);
 }
 
-void Stack_tPush(Stack_t* stack, uint64_t value) {
+void Stack_tPush(Stack_t* stack, stackElement value) {
     ASSERTION(stack);
 
 
@@ -182,8 +183,6 @@ stackElement Stack_tPop(Stack_t* stack) {
         stack->max_size = new_data_size / sizeof (stackElement);
         *(trigger*) (stack->data + stack->max_size * sizeof (stackElement)) = END_TRIGGER;
     }
-
-    assert("[!] Popped element doesn't exist [!]" && stack->current_index > 0);
 
     stackElement value = *(stackElement*) (stack->data + (--stack->current_index) * sizeof (stackElement));
     *(stackElement*) (stack->data + stack->current_index * sizeof(stackElement)) = POISON;
