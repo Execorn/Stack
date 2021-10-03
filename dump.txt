@@ -1,0 +1,17 @@
+DUMP from Oct  3 2021, 21:34:13 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (134) in stack called myStack. Info below: 
+Error reason: [!] Data is NULL [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 21:34:13
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPush
+Line: 134
+Left Stack trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+
+ 
+ 
+ 
+ 
+ 

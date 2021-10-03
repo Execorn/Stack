@@ -31,9 +31,10 @@
 
 #define ASSERTION(var) \
     {                   \
-        int code = Stack_tOk(var, (location) {__LOCATION__ - 1});\
-        if (code) { \
-            Stack_tDump(stack, code);    \
+        int code = FinalCheck(var); \
+        if (code) {    \
+            (var)->error = (location) {__LOCATION__};             \
+            Stack_tDump(var, code); \
             assert("[!] VERIFY FAILED. VIEW THE DUMP FILE FOR A REPORT. [!]" && 0); \
         } \
     }
@@ -48,6 +49,7 @@ typedef uint64_t stackElement;
 typedef uint64_t trigger;
 typedef uint64_t hash;
 typedef uint64_t stackInfo;
+typedef int errno;
 
 typedef struct {
     const char* date;
@@ -80,16 +82,14 @@ enum ERRORS {
     NO_ERROR,
     STACK_NULL_ERROR,
     DATA_NULL_ERROR,
-    CURRENT_INDEX_ERROR,
-    #if (STACK_DEBUG >= FULL_CHECK)
-        TRIGGER_MODIFIED_ERROR,
-    #endif
-    #if (STACK_DEBUG >= EXPENSIVE_CHECK)
-        HASH_MODIFIED_ERROR,
-    #endif
-    STACK_DELETION_ERROR,
     STACK_SIZE_ERROR,
-    LOCATION_NULL_ERROR
+    STACK_DELETED_ERROR,
+    OVERFLOW,
+    UNDERFLOW,
+    INITIAL_TRIGGER_MODIFIED,
+    END_TRIGGER_MODIFIED,
+    INITIAL_DATA_TRIGGER_MODIFIED,
+    END_DATA_TRIGGER_MODIFIED
 };
 
 #if (STACK_DEBUG == FULL_CHECK)
@@ -112,12 +112,10 @@ const stackElement POISON = 0xdeaddead;
     const stackElement END_TRIGGER = 0xdeadfa11;
 #endif
 
-#if (STACK_DEBUG >= EXPENSIVE_CHECK)
-    const hash HASH_RATE = 263;
-#endif
+const hash HASH_RATE = 263;
 
 const long double MEMORY_RATE = 1.61803398875; // 1 + (sqrt(5) - 1) / 2
-const char* DUMP_FILE_PATH = "/mnt/c/Users/Legion/CLionProjects/Stack"; //change here to your dump file
+const char* DUMP_FILE_PATH = "/mnt/c/Users/Legion/CLionProjects/Stack/Dump.txt"; //change here to your dump file
 
 char* Stack_tpError(int code);
 
@@ -135,7 +133,19 @@ void PutHash(Stack_t* stack);
 
 void MakeStack(Stack_t* stack);
 
-int Stack_tOk(Stack_t* stack, location LC);
+errno CheckStackPointer(Stack_t* stack);
+
+errno CheckDataPointer(Stack_t* stack);
+
+errno CheckDataSize(Stack_t* stack);
+
+errno CheckCurrentIndex(Stack_t* stack);
+
+errno CheckTriggers(Stack_t* stack);
+
+errno CheckHash(Stack_t* stack);
+
+errno FinalCheck(Stack_t* stack);
 
 
 #endif //STACK_STACK_H
