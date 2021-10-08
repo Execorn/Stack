@@ -194,3 +194,96 @@ Value: 3735936685. Valid ? POISON. Address: 0x7ffc7eeedcb0. Index: 5
  
  
  
+DUMP from Oct  3 2021, 22:22:56 
+ERROR in file '/mnt/c/Users/Legion/CLionProjects/Stack/main.c' (136) in stack called myStack. Info below: 
+Error reason: [!] Left canary is modified [!]. 
+Error location:
+Date: Oct  3 2021
+Time: 22:22:56
+File: /mnt/c/Users/Legion/CLionProjects/Stack/main.c
+Function: Stack_tPush
+Line: 136
+Left Stack trigger: 0. Valid ? NO. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? YES. Valid trigger: 3735943697 
+Left Data trigger: 3735928559. Valid ? YES. Valid trigger: 3735928559 
+Right Stack trigger: 3735943697. Valid ? NO. Valid trigger: 3735943697 
+Stack hash: 0. Valid ? NO. Valid hash: 230628460612324606
+Stack hash: 12392536617563616744. Valid ? NO. Valid hash: 10118061527930954364
+Value: 10. Valid ? YES. Address: 0x7ffe3bbb4bb0. Index: 0
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 1
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 2
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 3
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 4
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 5
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 6
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 7
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 8
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 9
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 10
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 11
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 12
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 13
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 14
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 15
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 16
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 17
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 18
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 19
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 20
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 21
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 22
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 23
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 24
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 25
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 26
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 27
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 28
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 29
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 30
+Value: 3735936685. Valid ? POISON. Address: 0x7ffe3bbb4bb0. Index: 31
+
+ 
+ 
+ 
+ 
+ 
+DUMP from Oct  5 2021, 22:14:09 
+ERROR in file 'stack.c' (125) in stack called 'myStack'. Info below: 
+Error reason: [!] Stack underflow [!]. 
+Error location:
+Date: Oct  5 2021
+Time: 22:14:09
+File: stack.c
+Function: Stack_tPop
+Line: 125
+Left Stack trigger: 3735928559. Valid ? (null). Valid trigger: 4223709 
+Right Stack trigger: 3735943697. Valid ? (null). Valid trigger: 4223709 
+Left Data trigger: 3735928559. Valid ? (null). Valid trigger: 4223709 
+Right Stack trigger: 3735943697. Valid ? (null). Valid trigger: 4223713 
+Stack hash: 175527525. Valid ? DUMP from Oct  5 2021, 22:15:13 
+ERROR in file 'stack.c' (125) in stack called 'myStack'. Info below: 
+Error reason: [!] Stack underflow [!]. 
+Error location:
+Date: Oct  5 2021
+Time: 22:15:13
+File: stack.c
+Function: Stack_tPop
+Line: 125
+Left Stack trigger: 3735928559. Valid ? (null). Valid trigger: 4223709 
+Right Stack trigger: 3735943697. Valid ? (null). Valid trigger: 4223709 
+Left Data trigger: 3735928559. Valid ? (null). Valid trigger: 4223709 
+Right Stack trigger: 3735943697. Valid ? (null). Valid trigger: 4223713 
+Stack hash: 3744523393. Valid ? DUMP from Oct  5 2021, 22:15:39 
+ERROR in file 'stack.c' (125) in stack called 'myStack'. Info below: 
+Error reason: [!] Stack underflow [!]. 
+Error location:
+Date: Oct  5 2021
+Time: 22:15:39
+File: stack.c
+Function: Stack_tPop
+Line: 125
+Left Stack trigger: 3735928559. Valid ? (null). Valid trigger: 4223709 
+Right Stack trigger: 3735943697. Valid ? (null). Valid trigger: 4223709 
+Left Data trigger: 3735928559. Valid ? (null). Valid trigger: 4223709 
+Right Stack trigger: 3735943697. Valid ? (null). Valid trigger: 4223713 
+Stack hash: 2689895280. Valid ? 
