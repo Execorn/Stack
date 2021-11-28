@@ -1,87 +1,24 @@
 #include "stack.h"
 
 
-int main() {
-    StackConstructor(myStack);
-    StackPush(&myStack, 10);
-    StackPush(&myStack, 10001);
-    stackElement a = StackPop(&myStack);
-    printf("%lu \n", a);
-    printf("%lu \n", StackPop(&myStack));
-    printf("%lu \n", StackPop(&myStack));
-    printf("%lu \n", StackPop(&myStack)); //here is an error
-    StackDestructor(&myStack);
-}
+const long double MEMORY_RATE = 1.61803398875; // 1 + (sqrt(5) - 1) / 2
 
 
-void MakeStack(Stack_t* stack) {
-    assert("[!] Stack pointer is NULL [!]" && stack != NULL);
-
-    stack->max_size      = INITIAL_SIZE;
-    stack->current_index = 0;
-    stack->deletion      = DEFAULT_LOCATION;
-    stack->error         = DEFAULT_LOCATION;
-
-    stackInfo data_size = stack->max_size * sizeof (stackElement);
-    stackInfo data_and_security_size = data_size + SECURITY_SIZE;
-
-    stack->data = (uint8_t*) calloc(data_and_security_size, sizeof(stack->data[0]));
-    assert("[!] Couldn't allocate memory [!]" && stack->data != NULL);
-
-    stack->data += ALTERATION; // [!] ATTENTION [!] shifting pointer into data start
-    #if (STACK_DEBUG >= FULL_CHECK)
-    stack->initial_trigger = INITIAL_TRIGGER;
-
-    *(trigger*) (stack->data - ALTERATION) = INITIAL_TRIGGER;
-    *(trigger*) (stack->data + data_size)  =     END_TRIGGER;
-
-    stack->end_trigger = END_TRIGGER;
-    #endif
-
-    assert("[!] Data pointer is NULL [!]" && stack->data != NULL);
-
-    for (size_t current_byte = 0; current_byte < data_size; current_byte += sizeof (stackElement)) {
-        *(stackElement*) (stack->data + current_byte) = POISON; // poisoning all elements at default
+int my_ceil(float num) {
+    int int_num = (int) num;
+    if (num == (float) int_num) {
+        return int_num;
     }
-
-    #if (STACK_DEBUG >= EXPENSIVE_CHECK)
-    PutHash(stack);
-    #endif
+    return int_num + 1;
 }
 
-void DeleteStack(Stack_t* stack, location LOCATION) {
-    ASSERTION(stack);
-
-
-    free(stack->data -= ALTERATION);
-    stack->data = (uint8_t*) EMPTY_ELEMENT;
-
-    stack->max_size = -1; //size is -1 for security
-    stack->deletion = LOCATION;
-    stack->data  += ALTERATION; //shifting pointer back for ASSERTION to work correctly
-}
 
 void Stack_tPush(Stack_t* stack, stackElement value) {
     ASSERTION(stack);
 
 
     if (stack->max_size <= stack->current_index) {
-        stack->data -= ALTERATION; //shifting back to all bytes to realloc all (to prevent pointer place change)
-
-        stackInfo data_size = stack->max_size * sizeof (stackElement);
-        stackInfo new_data_size = (stackInfo) (data_size * MEMORY_RATE);
-        stackInfo new_data_size_and_security = new_data_size + SECURITY_SIZE; //increase stack capacity but not security
-
-        stack->data = (uint8_t*) realloc(stack->data, new_data_size_and_security); // [!!!] pointer CAN be changed
-        assert("[!] Realloc failed [!]" && stack->data != NULL);
-
-        stack->data += ALTERATION; //passing security coz it's already copied by realloc
-        for (size_t current_byte = data_size; current_byte < new_data_size; current_byte += sizeof (stackElement)) {
-            *(stackElement*) (stack->data + current_byte) = POISON;
-        }
-
-        stack->max_size = new_data_size / sizeof (stackElement);
-        *(trigger*) (stack->data + stack->max_size * sizeof (stackElement)) = END_TRIGGER;
+        stack->data = IncreaseStackMemory(stack);
     }
 
     *(stackElement*) (stack->data + stack->current_index++ * sizeof (stackElement)) = value;
@@ -94,28 +31,98 @@ void Stack_tPush(Stack_t* stack, stackElement value) {
     ASSERTION(stack);
 }
 
+uint8_t* IncreaseStackMemory(Stack_t* stack) {
+    ASSERTION(stack);
+
+    stackInfo data_size = stack->max_size * sizeof (stackElement);
+    stackInfo new_data_size = (stackInfo) (data_size * my_ceil(MEMORY_RATE));
+    stackInfo new_data_size_and_security = new_data_size + SECURITY_SIZE; //increase stack capacity but not security
+
+    #if (STACK_DEBUG >= FULL_CHECK)
+    trigger* right_data_trigger = (trigger*) (stack->data + data_size);
+    trigger  actual_trigger     = *right_data_trigger;
+    *right_data_trigger = 0;
+    #endif
+
+    stack->data = (uint8_t*) realloc(stack->data - ALTERATION, new_data_size_and_security);
+    // [!!!] pointer CAN be changed
+    assert("[!] Realloc failed [!]" && stack->data != NULL);
+    stack->data += ALTERATION; //passing security coz it's already copied by realloc
+    stack->max_size = stack->max_size * my_ceil(MEMORY_RATE);
+
+    #if (STACK_DEBUG >= FULL_CHECK)
+    data_size           = stack->max_size * sizeof (stackElement);
+    right_data_trigger  =    (trigger*) (stack->data + data_size);
+    *right_data_trigger =                          actual_trigger;
+    #endif
+
+
+    for (stackInfo cur_ind = stack->current_index + 1; cur_ind < stack->max_size; cur_ind++) {
+        *(stackElement*) (stack->data + cur_ind * sizeof(stackElement)) = (stackElement) POISON;
+    }
+
+    #if (STACK_DEBUG >= EXPENSIVE_CHECK)
+    PutHash(stack);
+    #endif
+
+    ASSERTION(stack);
+
+
+    return stack->data;
+}
+
+uint8_t* DecreaseStackMemory(Stack_t* stack) {
+    ASSERTION(stack);
+
+    //stack->data -= ALTERATION; //shifting back to all bytes to realloc all (to prevent pointer place change)
+
+    stackInfo data_size = stack->max_size * sizeof (stackElement);
+    stackInfo new_data_size = (stackInfo) (data_size / my_ceil(MEMORY_RATE));
+    stackInfo new_data_size_and_security = new_data_size + SECURITY_SIZE; //increase stack capacity but not security
+
+    #if (STACK_DEBUG >= FULL_CHECK)
+        trigger* right_data_trigger = (trigger*) (stack->data + data_size);
+        trigger  actual_trigger     = *right_data_trigger;
+        *right_data_trigger = 0;
+    #endif
+
+    stack->data = (uint8_t*) realloc(stack->data - ALTERATION, new_data_size_and_security);
+    // [!!!] pointer CAN be changed
+    assert("[!] Realloc failed [!]" && stack->data != NULL);
+    stack->data += ALTERATION;
+    stack->max_size /= my_ceil(MEMORY_RATE);
+
+    #if (STACK_DEBUG >= FULL_CHECK)
+        data_size = stack->max_size * sizeof (stackElement);
+        right_data_trigger = (trigger*) (stack->data + data_size);
+        *right_data_trigger = actual_trigger;
+    #endif
+
+
+    for (stackInfo cur_ind = stack->current_index + 1; cur_ind < stack->max_size; cur_ind++) {
+        *(stackElement*) (stack->data + cur_ind * sizeof(stackElement)) = (stackElement) POISON;
+    }
+
+    #if (STACK_DEBUG >= EXPENSIVE_CHECK)
+    PutHash(stack);
+    #endif
+
+    ASSERTION(stack);
+
+    return stack->data;
+}
+
 stackElement Stack_tPop(Stack_t* stack) {
     ASSERTION(stack);
 
 
-    if (stack->max_size >= (stackInfo) (MEMORY_RATE * stack->current_index)) {
-        stack->data -= ALTERATION; //shifting back to all bytes to realloc all (to prevent pointer place change)
-
-        stackInfo data_size = stack->max_size * sizeof (stackElement);
-        stackInfo new_data_size = (uint64_t) (data_size / MEMORY_RATE);
-        stackInfo new_data_and_security_size = new_data_size + SECURITY_SIZE; //increase stack capacity but not security
-
-        stack->data = (uint8_t*) realloc(stack->data, new_data_and_security_size); //(!!) pointer can be changed
-        assert("[!] Realloc failed [!]" && stack->data != NULL);
-
-        stack->data += ALTERATION; //passing security coz it's already copied by realloc
-
-        stack->max_size = new_data_size / sizeof (stackElement);
-        *(trigger*) (stack->data + stack->max_size * sizeof (stackElement)) = END_TRIGGER;
+    if (stack->max_size >= my_ceil(MEMORY_RATE) * stack->current_index) {
+        stack->data      = DecreaseStackMemory(stack);
     }
 
+
     stackElement value = *(stackElement*) (stack->data + (--stack->current_index) * sizeof (stackElement));
-    *(stackElement*) (stack->data + stack->current_index * sizeof(stackElement)) = POISON;
+    *(stackElement*) (stack->data + stack->current_index * sizeof(stackElement)) = (stackElement) POISON;
 
     #if (STACK_DEBUG >= EXPENSIVE_CHECK)
     PutHash(stack);
@@ -126,101 +133,25 @@ stackElement Stack_tPop(Stack_t* stack) {
     return value;
 }
 
-void Stack_tDump(Stack_t* stack, int code) {
-    FILE* dump_output = fopen("dump.txt", "a"); // or DUMP_FILE_PATH
-    assert("[!] Dump file can't be opened [!]" && dump_output != NULL);
-    setvbuf(dump_output, NULL, _IONBF, 0);
 
-    fprintf(dump_output, "DUMP from %s, %s \n", __DATE__, __TIME__);
-    fprintf(dump_output, "ERROR in file '%s' (%d) in stack called '%s'. Info below: \n",
-            stack->creation.file, stack->error.line, stack->name);
-    fprintf(dump_output, "Error reason: %s. \nError location:\n"
-                         "Date: %s\n"
-                         "Time: %s\n"
-                         "File: %s\n"
-                         "Function: %s\n"
-                         "Line: %d\n",
-                         Stack_tpError(code), stack->error.date, stack->error.time,
-                         stack->error.file, stack->error.function, stack->error.line);
+stackInfo PushElementByIndex(Stack_t* stack, stackElement val, stackInfo wheretopush) {
+    ASSERTION(stack);
+    assert("[!] Stack overflow (DEV ONLY FUNCTION) [!]" && stack->max_size <= wheretopush);
 
-    #if (STACK_DEBUG >= FULL_CHECK)
-    fprintf(dump_output, "Left Stack trigger: %lu. Valid ? %s. Valid trigger: %lu \n",
-            stack->initial_trigger, stack->initial_trigger == INITIAL_TRIGGER ?
-            "YES" : "NO", INITIAL_TRIGGER);
-    fprintf(dump_output, "Right Stack trigger: %lu. Valid ? %s. Valid trigger: %lu \n",
-            stack->end_trigger, stack->end_trigger == END_TRIGGER ?
-            "YES" : "NO", END_TRIGGER);
-    if (stack->data != NULL && stack->data != (uint8_t*) EMPTY_ELEMENT) {
-        fprintf(dump_output, "Left Data trigger: %lu. Valid ? %s. Valid trigger: %lu \n",
-                *(trigger*) (stack->data - ALTERATION),
-                *(trigger*) (stack->data - ALTERATION) == INITIAL_TRIGGER ?
-                "YES" : "NO", INITIAL_TRIGGER);
-        fprintf(dump_output, "Right Stack trigger: %lu. Valid ? %s. Valid trigger: %lu \n",
-                *(trigger*) (stack->data + stack->max_size * sizeof (stackElement)),
-                *(trigger*) (stack->data + stack->max_size * sizeof (stackElement)) == INITIAL_TRIGGER ?
-                "YES" : "NO", END_TRIGGER);
-    }
-    #endif
+    *(stackElement*) (stack->data + (wheretopush) * sizeof(stackElement)) = val; // pushing BY INDEX
 
-    #if (STACK_DEBUG >= EXPENSIVE_CHECK)
-    if (stack->data != NULL && stack->data != (uint8_t*) EMPTY_ELEMENT) {
-        hash current_hash = 0, current_data_hash = 0;
-        GetHash(stack, &current_hash, &current_data_hash);
-        fprintf(dump_output, "Stack hash: %lu. Valid ? %s. Valid hash: %lu\n",
-                *(trigger*) (stack->data - ALTERATION + sizeof (trigger)),
-                *(trigger*) (stack->data - ALTERATION + sizeof (trigger)) == current_hash ?
-                "YES" : "NO", current_hash);
-        fprintf(dump_output, "Data hash: %lu. Valid ? %s. Valid hash: %lu\n",
-                *(trigger*) (stack->data - ALTERATION + sizeof (trigger) + sizeof (hash)),
-                *(trigger*) (stack->data - ALTERATION + sizeof (trigger) + (sizeof (hash))) == current_data_hash ?
-                "YES" : "NO", current_data_hash);
-    }
-    #endif
-
-    if (stack->data != NULL && stack->data != (uint8_t*) EMPTY_ELEMENT) {
-        for (size_t current_byte = 0;
-        current_byte < stack->max_size * sizeof (stackElement);
-        current_byte += sizeof (stackElement)) {
-            stackElement current_value = *(stackElement*) (stack->data + current_byte);
-            fprintf(dump_output, "Value: %lu. Valid ? %s. Address: %p. Index: %lu\n",
-                    current_value,
-                    current_value != POISON ? "YES" : "POISON", &current_value,
-                    current_byte / sizeof (stackElement));
-        }
-    }
-
-    fprintf(dump_output,
-            "\n\n         --------------------------------------         \n\n"); //dump separator
-    fclose(dump_output);
+    ASSERTION(stack);
+    return 0;
 }
 
-char* Stack_tpError(stackErrno code) {
-    switch (code) {
-        case NO_ERROR:
-            return "All is OK.";
-        case STACK_NULL_ERROR:
-            return "[!] Stack is NULL [!]";
-        case DATA_NULL_ERROR:
-            return "[!] Data is NULL [!]";
-        case STACK_SIZE_ERROR:
-            return "[!] Stack size is negative [!]";
-        case STACK_DELETED_ERROR:
-            return "[!] Stack is already deleted [!]";
-        case OVERFLOW:
-            return "[!] Stack overflow [!]";
-        case UNDERFLOW:
-            return "[!] Stack underflow [!]";
-        case INITIAL_TRIGGER_MODIFIED:
-            return "[!] Left canary is modified [!]";
-        case END_TRIGGER_MODIFIED:
-            return "[!] Right canary is modified [!]";
-        case INITIAL_DATA_TRIGGER_MODIFIED:
-            return "[!] Left data canary is modified [!]";
-        case END_DATA_TRIGGER_MODIFIED:
-            return "[!] Right data canary is modified [!]";
-        default:
-            return "[!] Something's gone wrong. Can't get the error [!]"; // NULL here or error code in string
-    }
+stackElement PopElementByIndex(Stack_t* stack, stackInfo popidx) {
+    ASSERTION(stack);
+
+    stackElement value = *(stackElement*)(stack->data + popidx * sizeof(stackElement));
+    *(stackElement*)(stack->data + popidx * sizeof(stackElement)) = (stackElement) POISON;
+
+    ASSERTION(stack);
+    return value;
 }
 
 void GetHash(Stack_t* stack, hash* current_hash, hash* current_data_hash) {
@@ -235,14 +166,14 @@ void GetHash(Stack_t* stack, hash* current_hash, hash* current_data_hash) {
     hash current_data_power = 1;
     for (size_t hashByte = 0; hashByte < stack->max_size * sizeof (stackElement); hashByte++) { //no extra trigger in the end
         *current_data_hash  += *(stack->data + hashByte) * current_data_power;
-        current_stack_power *= HASH_RATE;
+        current_data_power *= HASH_RATE;
     }
 }
 
 void PutHash(Stack_t* stack) {
-    #if (STACK_DEBUG < EXPENSIVE_CHECK)
-        return;
-    #endif
+#if (STACK_DEBUG < EXPENSIVE_CHECK)
+    return;
+#endif
     assert("[!] Stack pointer is NULL [!]" && stack != NULL);
 
     hash current_hash = 0, current_data_hash = 0;
@@ -328,11 +259,149 @@ stackErrno FinalCheck(Stack_t* stack) {
     return checker;
 }
 
-hash Power(int64_t base, uint64_t power) {
-    hash current = 1;
-    for (size_t current_power = 0; current_power < power; current_power++) {
-        current *= base;
+
+void Stack_tDump(Stack_t* stack, int code) {
+    FILE* dump_output = fopen("dump.txt", "a"); // or DUMP_FILE_PATH
+    assert("[!] Dump file can't be opened [!]" && dump_output != NULL);
+    setvbuf(dump_output, NULL, _IONBF, 0);
+
+    fprintf(dump_output, "DUMP from %s, %s \n", __DATE__, __TIME__);
+    fprintf(dump_output, "ERROR in file '%s' (%d) in stack called '%s'. Info below: \n",
+            stack->creation.file, stack->error.line, stack->name);
+    fprintf(dump_output, "Error reason: %s. \nError location:\n"
+                         "Date: %s\n"
+                         "Time: %s\n"
+                         "File: %s\n"
+                         "Function: %s\n"
+                         "Line: %d\n",
+            Stack_tpError(code), stack->error.date, stack->error.time,
+            stack->error.file, stack->error.function, stack->error.line);
+
+#if (STACK_DEBUG >= FULL_CHECK)
+    fprintf(dump_output, "Left Stack trigger: %lu. Valid ? %s. Valid trigger: %u \n",
+            stack->initial_trigger, stack->initial_trigger == INITIAL_TRIGGER ?
+                                    "YES" : "NO", INITIAL_TRIGGER);
+    fprintf(dump_output, "Right Stack trigger: %lu. Valid ? %s. Valid trigger: %u \n",
+            stack->end_trigger, stack->end_trigger == END_TRIGGER ?
+                                "YES" : "NO", END_TRIGGER);
+    if (stack->data != NULL && stack->data != (uint8_t*) EMPTY_ELEMENT) {
+        fprintf(dump_output, "Left Data trigger: %lu. Valid ? %s. Valid trigger: %u \n",
+                *(trigger*) (stack->data - ALTERATION),
+                *(trigger*) (stack->data - ALTERATION) == INITIAL_TRIGGER ?
+                "YES" : "NO", INITIAL_TRIGGER);
+        fprintf(dump_output, "Right Stack trigger: %lu. Valid ? %s. Valid trigger: %u \n",
+                *(trigger*) (stack->data + stack->max_size * sizeof (stackElement)),
+                *(trigger*) (stack->data + stack->max_size * sizeof (stackElement)) == INITIAL_TRIGGER ?
+                "YES" : "NO", END_TRIGGER);
     }
-    // optimise here (not n^n)
-    return current;
+#endif
+
+#if (STACK_DEBUG >= EXPENSIVE_CHECK)
+    if (stack->data != NULL && stack->data != (uint8_t*) EMPTY_ELEMENT) {
+        hash current_hash = 0, current_data_hash = 0;
+        GetHash(stack, &current_hash, &current_data_hash);
+        fprintf(dump_output, "Stack hash: %lu. Valid ? %s. Valid hash: %lu\n",
+                *(trigger*) (stack->data - ALTERATION + sizeof (trigger)),
+                *(trigger*) (stack->data - ALTERATION + sizeof (trigger)) == current_hash ?
+                "YES" : "NO", current_hash);
+        fprintf(dump_output, "Data hash: %lu. Valid ? %s. Valid hash: %lu\n",
+                *(trigger*) (stack->data - ALTERATION + sizeof (trigger) + sizeof (hash)),
+                *(trigger*) (stack->data - ALTERATION + sizeof (trigger) + (sizeof (hash))) == current_data_hash ?
+                "YES" : "NO", current_data_hash);
+    }
+#endif
+
+    if (stack->data != NULL && stack->data != (uint8_t*) EMPTY_ELEMENT) {
+        for (size_t current_byte = 0;
+             current_byte < stack->max_size * sizeof (stackElement);
+             current_byte += sizeof (stackElement)) {
+            stackElement current_value = *(stackElement*) (stack->data + current_byte);
+            fprintf(dump_output, "Value: %s. Valid ? %s. Address: %p. Index: %lu\n",
+                    current_value,
+                    current_value != (stackElement) POISON ? "YES" : "POISON", &current_value,
+                    current_byte / sizeof (stackElement));
+        }
+    }
+
+    fprintf(dump_output,
+            "\n\n         --------------------------------------         \n\n"); //dump separator
+    fclose(dump_output);
+}
+
+char* Stack_tpError(stackErrno code) {
+    switch (code) {
+        case NO_ERROR:
+            return "All is OK.";
+        case STACK_NULL_ERROR:
+            return "[!] Stack is NULL [!]";
+        case DATA_NULL_ERROR:
+            return "[!] Data is NULL [!]";
+        case STACK_SIZE_ERROR:
+            return "[!] Stack size is negative [!]";
+        case STACK_DELETED_ERROR:
+            return "[!] Stack is already deleted [!]";
+        case OVERFLOW:
+            return "[!] Stack overflow [!]";
+        case UNDERFLOW:
+            return "[!] Stack underflow [!]";
+        case INITIAL_TRIGGER_MODIFIED:
+            return "[!] Left canary is modified [!]";
+        case END_TRIGGER_MODIFIED:
+            return "[!] Right canary is modified [!]";
+        case INITIAL_DATA_TRIGGER_MODIFIED:
+            return "[!] Left data canary is modified [!]";
+        case END_DATA_TRIGGER_MODIFIED:
+            return "[!] Right data canary is modified [!]";
+        default:
+            return "[!] Something's gone wrong. Can't get the error [!]"; // NULL here or error code in string
+    }
+}
+
+
+
+void MakeStack(Stack_t* stack) {
+    assert("[!] Stack pointer is NULL [!]" && stack != NULL);
+
+    stack->max_size      = INITIAL_SIZE;
+    stack->current_index = 0;
+    stack->deletion      = DEFAULT_LOCATION;
+    stack->error         = DEFAULT_LOCATION;
+
+    stackInfo data_size = stack->max_size * sizeof (stackElement);
+    stackInfo data_and_security_size = data_size + SECURITY_SIZE;
+
+    stack->data = (uint8_t*) calloc(data_and_security_size, sizeof(stack->data[0]));
+    assert("[!] Couldn't allocate memory [!]" && stack->data != NULL);
+
+    stack->data += ALTERATION; // [!] ATTENTION [!] shifting pointer into data start
+#if (STACK_DEBUG >= FULL_CHECK)
+    stack->initial_trigger = INITIAL_TRIGGER;
+
+    *(trigger*) (stack->data - ALTERATION) = INITIAL_TRIGGER;
+    *(trigger*) (stack->data + data_size)  =     END_TRIGGER;
+
+    stack->end_trigger = END_TRIGGER;
+#endif
+
+    assert("[!] Data pointer is NULL [!]" && stack->data != NULL);
+
+    for (size_t current_byte = 0; current_byte < data_size; current_byte += sizeof (stackElement)) {
+        *(stackElement*) (stack->data + current_byte) = (stackElement) POISON; // poisoning all elements at default
+    }
+
+#if (STACK_DEBUG >= EXPENSIVE_CHECK)
+    PutHash(stack);
+#endif
+}
+
+void DeleteStack(Stack_t* stack, location LOCATION) {
+    ASSERTION(stack);
+
+
+    free(stack->data -= ALTERATION);
+    stack->data = (uint8_t*) EMPTY_ELEMENT;
+
+    stack->max_size = -1; //size is -1 for security
+    stack->deletion = LOCATION;
+    stack->data  += ALTERATION; //shifting pointer back for ASSERTION to work correctly
 }

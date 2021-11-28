@@ -16,8 +16,14 @@
 
 #define STACK_DEBUG EXPENSIVE_CHECK // change STACK_DEBUG here to change check level
 
+#define PRINT_DEBUG 1
+
 #if (!defined(STACK_DEBUG))
     #define STACK_DEBUG LIGHT_CHECK
+#endif
+
+#if (!defined(PRINT_DEBUG))
+    #define PRINT_DEBUG 0
 #endif
 
 #define __LOCATION__  __DATE__, __TIME__, __FILE__, __FUNCTION__, __LINE__
@@ -26,7 +32,7 @@
 #define StackConstructor(var) \
     Stack_t       var;        \
     (var).name = #var;    \
-    (var).creation = (location) {__LOCATION__ - 2}; \
+    (var).creation = (location) {__LOCATION__}; \
     MakeStack(&(var));\
 
 #define ASSERTION(var) \
@@ -47,7 +53,7 @@
 
 #define StackPop(stack) Stack_tPop(stack)
 
-typedef int64_t stackElement;
+typedef uint8_t* stackElement;
 typedef uint64_t trigger;
 typedef uint64_t hash;
 typedef int64_t stackInfo;
@@ -81,7 +87,7 @@ typedef struct {
 
 
 enum ERRORS {
-    NO_ERROR,
+    NO_ERROR = 0,
     STACK_NULL_ERROR,
     DATA_NULL_ERROR,
     STACK_SIZE_ERROR,
@@ -94,38 +100,40 @@ enum ERRORS {
     END_DATA_TRIGGER_MODIFIED
 };
 
+enum Security{
 #if (STACK_DEBUG == FULL_CHECK)
-    stackInfo SECURITY_SIZE = 2 * sizeof (trigger);
-    stackInfo ALTERATION    =     sizeof (trigger);
+    SECURITY_SIZE = 2 * sizeof (trigger),
+    ALTERATION    =     sizeof (trigger),
 #elif (STACK_DEBUG >= EXPENSIVE_CHECK)
-    stackInfo SECURITY_SIZE = 2 * sizeof (trigger) + 2 * sizeof (hash);
-    stackInfo ALTERATION    =     sizeof (trigger) + 2 * sizeof (hash);
+    SECURITY_SIZE = 2 * sizeof (trigger) + 2 * sizeof (hash),
+    ALTERATION    =     sizeof (trigger) + 2 * sizeof (hash),
 #else
-    stackInfo SECURITY_SIZE = 0;
-    stackInfo ALTERATION    = 0;
+    SECURITY_SIZE = 0,
+    ALTERATION    = 0,
 #endif
-
-const stackInfo    INITIAL_SIZE  = 32;
-const stackElement EMPTY_ELEMENT = 0xca11;
-const stackElement POISON        = 0xdeaddead;
+    INITIAL_SIZE     =         32,
+    EMPTY_ELEMENT    =     0xca11,
+    POISON           = 0xdeaddead,
 
 #if (STACK_DEBUG >= FULL_CHECK)
-    const stackElement INITIAL_TRIGGER = 0xDEADBEEF;
-    const stackElement     END_TRIGGER = 0xdeadfa11;
+    INITIAL_TRIGGER  = 0xDEADBEEF,
+    END_TRIGGER      = 0xdeadfa11,
 #endif
-
-const hash HASH_RATE = 263;
-
-const long double MEMORY_RATE = 1.61803398875; // 1 + (sqrt(5) - 1) / 2
+    HASH_RATE        =        263,
+};
 // const char* DUMP_FILE_PATH = "/mnt/c/Users/Legion/CLionProjects/Stack/Dump.txt"; //change here to your dump file
 
-
+extern const long double MEMORY_RATE; // 1 + (sqrt(5) - 1) / 2
 
 char* Stack_tpError(stackErrno code);
 
 void Stack_tDump(Stack_t* stack, stackErrno code);
 
 void Stack_tPush(Stack_t* stack, stackElement value);
+
+stackInfo PushElementByIndex(Stack_t* stack, stackElement val, stackInfo wheretopush);
+
+stackElement PopElementByIndex(Stack_t* stack, stackInfo popidx);
 
 stackElement Stack_tPop(Stack_t* stack);
 
@@ -153,5 +161,10 @@ stackErrno FinalCheck(Stack_t* stack);
 
 hash Power(int64_t base, uint64_t power);
 
+uint8_t* IncreaseStackMemory(Stack_t* stack);
+
+uint8_t* DecreaseStackMemory(Stack_t* stack);
+
+int my_ceil(float num);
 
 #endif //STACK_STACK_H
